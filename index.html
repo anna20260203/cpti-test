@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CPTI 婚恋人格测试</title>
+  <style>
+    :root {
+      --bg: #fbf7f2;
+      --card: #fffdf9;
+      --text: #2f2926;
+      --muted: #7b6f68;
+      --line: #eadfd5;
+      --accent: #b9826b;
+      --accent-dark: #8f5f4d;
+      --soft: #f4e7dd;
+      --shadow: 0 18px 45px rgba(89, 61, 44, 0.12);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(circle at top, #fff6ee 0%, var(--bg) 45%, #f8eee6 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .container {
+      width: min(960px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 36px 0 56px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #fffdf9, #f4e2d6);
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: 34px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 16px;
+      margin: 0 0 20px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .tag {
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+      color: var(--accent-dark);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: 0 10px 30px rgba(89, 61, 44, 0.08);
+      margin: 18px 0;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    h3 {
+      margin: 26px 0 12px;
+      font-size: 18px;
+      color: var(--accent-dark);
+    }
+
+    .guide {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .progress-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(251, 247, 242, 0.86);
+      backdrop-filter: blur(10px);
+      padding: 12px 0;
+      margin-bottom: 10px;
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .bar {
+      height: 9px;
+      background: #eadfd5;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #bd8067, #d5a28e);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .question {
+      padding: 20px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .question:first-of-type { border-top: none; }
+
+    .q-title {
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .option {
+      border: 1px solid var(--line);
+      background: #fffaf5;
+      color: var(--text);
+      padding: 11px 8px;
+      border-radius: 14px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 14px;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .option:hover {
+      border-color: #d8aa98;
+      transform: translateY(-1px);
+    }
+
+    .option.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(185, 130, 107, 0.28);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 28px 0;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 12px 24px rgba(185, 130, 107, 0.28);
+    }
+
+    .primary:hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+    .secondary {
+      background: #fffaf5;
+      border: 1px solid var(--line);
+      color: var(--accent-dark);
+    }
+
+    .secondary:hover { background: var(--soft); }
+
+    .warning {
+      display: none;
+      color: #a24b3c;
+      background: #fff0eb;
+      border: 1px solid #f0c1b5;
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin: 16px 0;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    #result { display: none; }
+
+    .result-hero {
+      text-align: center;
+      background: linear-gradient(135deg, #fffaf5, #f1ded2);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .type-title {
+      font-size: clamp(28px, 4vw, 42px);
+      margin: 8px 0;
+      letter-spacing: -0.03em;
+    }
+
+    .level-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--line);
+      color: var(--accent-dark);
+      font-weight: 800;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .score-box {
+      background: #fffaf5;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .score-label { color: var(--muted); font-size: 14px; }
+    .score-number { font-size: 26px; font-weight: 900; color: var(--accent-dark); margin-top: 4px; }
+
+    .section-text p {
+      margin: 10px 0;
+    }
+
+    .mini-title {
+      font-weight: 900;
+      color: var(--accent-dark);
+      margin-top: 16px;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      text-align: center;
+      margin-top: 22px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 760px) {
+      .hero, .card, .result-hero { padding: 22px; }
+      .options { grid-template-columns: 1fr; }
+      .score-grid { grid-template-columns: repeat(2, 1fr); }
+      .container { width: min(100% - 22px, 960px); padding-top: 18px; }
+    }
+
+    @media print {
+      .progress-wrap, #quiz, .actions, .warning, .hero { display: none !important; }
+      #result { display: block !important; }
+      body { background: white; }
+      .card, .result-hero { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>CPTI 婚恋人格测试</h1>
+      <p class="subtitle">请根据真实状态作答，而不是理想状态。完成 28 题后，将自动生成你的婚恋人格结果报告。</p>
+      <div class="tags">
+        <span class="tag">女王</span>
+        <span class="tag">千金</span>
+        <span class="tag">富贵花</span>
+        <span class="tag">小白花</span>
+        <span class="tag">高阶</span>
+        <span class="tag">中阶</span>
+        <span class="tag">低阶</span>
+      </div>
+    </section>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-row">
+        <span id="answeredText">已完成 0 / 28</span>
+        <span>每题选择最符合你的一项</span>
+      </div>
+      <div class="bar"><div class="bar-inner" id="barInner"></div></div>
+    </div>
+
+    <section id="quiz" class="card">
+      <h2>开始测试</h2>
+      <p class="guide">选项为：非常不符合 / 不符合 / 一般 / 符合 / 非常符合。</p>
+      <div id="questions"></div>
+
+      <div id="warning" class="warning">还有题目没有作答，请完成全部 28 题后再查看结果。</div>
+
+      <div class="actions">
+        <button class="primary" onclick="calculateResult()">查看我的测试结果</button>
+        <button class="secondary" onclick="resetQuiz()">重新作答</button>
+      </div>
+    </section>
+
+    <section id="result">
+      <div class="result-hero">
+        <div class="level-pill" id="levelPill">测试结果</div>
+        <h2 class="type-title" id="mainType">你的主人格类型是：</h2>
+        <p class="subtitle" id="oneLine"></p>
+
+        <div class="score-grid">
+          <div class="score-box">
+            <div class="score-label">女王得分</div>
+            <div class="score-number" id="queenScore"></div>
+          </div>
+          <div class="score-box">
+            <div class="score-label">千金得分</div>
+            <div class="score-number" id="heiressScore"></div>
+          </div>
+          <div class="score-box">
+            <div class="score-label">富贵花得分</div>
+            <div class="score-number" id="richFlowerScore"></div>
+          </div>
+          <div class="score-box">
+            <div class="score-label">小白花得分</div>
+            <div class="score-number" id="softFlowerScore"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card section-text">
+        <h2>一、测试结果总览</h2>
+        <p id="overview"></p>
+      </div>
+
+      <div class="card section-text">
+        <h2>二、人格结构解读</h2>
+        <div id="personalityReading"></div>
+      </div>
+
+      <div class="card section-text">
+        <h2>三、能级解读</h2>
+        <div id="levelReading"></div>
+      </div>
+
+      
+      </div>
+
+      
+      </div>
+
+      <div class="actions">
+        <button class="primary" onclick="window.print()">保存 / 打印结果</button>
+        <button class="secondary" onclick="backToQuiz()">返回修改答案</button>
+        <button class="secondary" onclick="resetQuiz()">重新测试</button>
+      </div>
+      <p class="footer-note">CPTI 婚恋人格测试仅用于自我观察与关系复盘，不作为绝对判断。</p>
+    </section>
+  </div>
+
+<script>
+const dimensions = {
+  queen: { name: "女王", full: "模块一", range: [1,6] },
+  heiress: { name: "千金", full: "模块二", range: [7,12] },
+  richFlower: { name: "富贵花", full: "模块三", range: [13,18] },
+  softFlower: { name: "小白花", full: "模块四", range: [19,24] }
+};
+
+const questions = [
+  { id: 1, dim: "queen", text: "即使没有伴侣，我也有能力让自己过得很好" },
+  { id: 2, dim: "queen", text: "我不指望通过婚恋改变自己的阶层或生活质量" },
+  { id: 3, dim: "queen", text: "我更看重对方是否尊重我的事业和选择" },
+  { id: 4, dim: "queen", text: "经济独立对我来说是底线，而不是加分项" },
+  { id: 5, dim: "queen", text: "在亲密关系中，我不习惯示弱或依赖" },
+  { id: 6, dim: "queen", text: "我的人生主线一定是自我成长，而不是感情" },
+
+  { id: 7, dim: "heiress", text: "我的原生家庭背景在婚恋中是重要筹码" },
+  { id: 8, dim: "heiress", text: "我择偶时会自然考虑家庭层级是否匹配" },
+  { id: 9, dim: "heiress", text: "父母或家族意见会明显影响我的婚恋选择" },
+  { id: 10, dim: "heiress", text: "我清楚自己能从家庭资源中获得哪些支持" },
+  { id: 11, dim: "heiress", text: "婚恋在我这里，某种程度上是资源协同" },
+  { id: 12, dim: "heiress", text: "我并不急于进入关系，因为我本身就有托底" },
+
+  { id: 13, dim: "richFlower", text: "对方是否愿意为我持续付出，对我很重要" },
+  { id: 14, dim: "richFlower", text: "我会通过“付出行为”来判断一个男人的诚意" },
+  { id: 15, dim: "richFlower", text: "比起情绪价值，我更在意生活是否被妥善照顾" },
+  { id: 16, dim: "richFlower", text: "我不太能接受长期关系中经济层面的模糊" },
+  { id: 17, dim: "richFlower", text: "如果对方不愿意投入资源，我会逐渐降温" },
+  { id: 18, dim: "richFlower", text: "我相信被长期供养是一种能力，而不是羞耻" },
+
+  { id: 19, dim: "softFlower", text: "情绪连接和灵魂共振比物质条件更重要" },
+  { id: 20, dim: "softFlower", text: "我很在意在关系中是否被理解、被回应" },
+  { id: 21, dim: "softFlower", text: "亲密关系对我来说是重要的情感支撑" },
+  { id: 22, dim: "softFlower", text: "我愿意为爱让步，但前提是不失去自我" },
+  { id: 23, dim: "softFlower", text: "如果关系让我持续不安，我会选择退出" },
+  { id: 24, dim: "softFlower", text: "我向往稳定、温柔、长期的亲密关系" },
+
+  { id: 25, dim: "level", text: "我的自我价值感主要来自内在，而非他人评价" },
+  { id: 26, dim: "level", text: "即使暂时没有感情进展，我也不会自我怀疑" },
+  { id: 27, dim: "level", text: "我能觉察自己的匮乏或执念，并主动调整" },
+  { id: 28, dim: "level", text: "我进入关系是因为想要，而不是害怕失去" }
+];
+
+const options = [
+  { label: "非常不符合", value: 1 },
+  { label: "不符合", value: 2 },
+  { label: "一般", value: 3 },
+  { label: "符合", value: 4 },
+  { label: "非常符合", value: 5 }
+];
+
+const answers = {};
+
+function renderQuestions() {
+  const box = document.getElementById("questions");
+  let currentDim = "";
+  box.innerHTML = "";
+
+  questions.forEach(q => {
+    if (q.dim !== currentDim) {
+      currentDim = q.dim;
+      const title = document.createElement("h3");
+      title.textContent = q.dim === "level" ? "能级测量题" : dimensions[q.dim].full;
+      box.appendChild(title);
+    }
+
+    const wrap = document.createElement("div");
+    wrap.className = "question";
+    wrap.id = `q-${q.id}`;
+
+    const title = document.createElement("div");
+    title.className = "q-title";
+    title.textContent = `${q.id}. ${q.text}`;
+    wrap.appendChild(title);
+
+    const opts = document.createElement("div");
+    opts.className = "options";
+
+    options.forEach(opt => {
+      const btn = document.createElement("div");
+      btn.className = "option";
+      btn.textContent = opt.label;
+      btn.onclick = () => selectAnswer(q.id, opt.value, btn);
+      opts.appendChild(btn);
+    });
+
+    wrap.appendChild(opts);
+    box.appendChild(wrap);
+  });
+}
+
+function selectAnswer(id, value, el) {
+  answers[id] = value;
+  const parent = document.querySelector(`#q-${id} .options`);
+  parent.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+  el.classList.add("selected");
+  document.getElementById("warning").style.display = "none";
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(answers).length;
+  document.getElementById("answeredText").textContent = `已完成 ${answered} / 28`;
+  document.getElementById("barInner").style.width = `${answered / 28 * 100}%`;
+}
+
+function getLevel(score) {
+  if (score < 60) return "低阶";
+  if (score < 90) return "中阶";
+  return "高阶";
+}
+
+function scoreLevelText(levelScore) {
+  const level = getLevel(levelScore);
+  if (level === "低阶") return "低阶｜向外求、安全感不足、容易用关系确认自己";
+  if (level === "中阶") return "中阶｜已经开始向内求，但偶尔还是会紧绷和证明";
+  return "高阶｜自我价值感稳定，关系是选择，不是救命绳";
+}
+
+function rankScores(scores) {
+  return Object.entries(scores).sort((a,b) => b[1] - a[1]);
+}
+
+function calculateResult() {
+  if (Object.keys(answers).length < 28) {
+    document.getElementById("warning").style.display = "block";
+    const firstMissing = questions.find(q => !answers[q.id]);
+    if (firstMissing) document.getElementById(`q-${firstMissing.id}`).scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+  const scores = { queen: 0, heiress: 0, richFlower: 0, softFlower: 0 };
+  let rawLevel = 0;
+
+  questions.forEach(q => {
+    if (q.dim === "level") rawLevel += answers[q.id];
+    else scores[q.dim] += answers[q.id];
+  });
+
+  const levelScore = Math.round(rawLevel / 20 * 100);
+  const level = getLevel(levelScore);
+  const ranking = rankScores(scores);
+  const main = ranking[0][0];
+  const sub = ranking[1][0];
+
+  fillResult(scores, rawLevel, levelScore, level, main, sub, ranking);
+
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("progressWrap").style.display = "none";
+  document.getElementById("result").style.display = "block";
+  document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function fillResult(scores, rawLevel, levelScore, level, main, sub, ranking) {
+  const mainName = dimensions[main].name;
+  const subName = dimensions[sub].name;
+
+  document.getElementById("levelPill").textContent = `能级得分：${levelScore} / 100｜${level}`;
+  document.getElementById("mainType").textContent = `你的主人格类型是：${mainName} × ${subName}`;
+  document.getElementById("oneLine").textContent = oneLine(main, sub, level);
+
+  document.getElementById("queenScore").textContent = `${scores.queen} / 30`;
+  document.getElementById("heiressScore").textContent = `${scores.heiress} / 30`;
+  document.getElementById("richFlowerScore").textContent = `${scores.richFlower} / 30`;
+  document.getElementById("softFlowerScore").textContent = `${scores.softFlower} / 30`;
+
+  document.getElementById("overview").innerHTML = `
+    你的主人格是 <b>${mainName}</b>，辅人格是 <b>${subName}</b>。四个维度里，${mainName}得分最高，说明你在婚恋里最核心的需求会优先从这个人格出发。<br><br>
+    女王得分：<b>${scores.queen} / 30</b>；千金得分：<b>${scores.heiress} / 30</b>；富贵花得分：<b>${scores.richFlower} / 30</b>；小白花得分：<b>${scores.softFlower} / 30</b>。<br><br>
+    能级题原始分是 <b>${rawLevel} / 20</b>，换算后是 <b>${levelScore} / 100</b>，属于 <b>${level}</b>。
+  `;
+
+  document.getElementById("personalityReading").innerHTML = personalityReading(main, sub, scores, ranking);
+  document.getElementById("levelReading").innerHTML = levelReading(level, levelScore, rawLevel);
+
+  const mateAdviceBox = document.getElementById("mateAdvice");
+  if (mateAdviceBox) mateAdviceBox.innerHTML = mateAdvice(main, sub, level);
+
+  const growthAdviceBox = document.getElementById("growthAdvice");
+  if (growthAdviceBox) growthAdviceBox.innerHTML = growthAdvice(main, sub, level);
+}
+
+function oneLine(main, sub, level) {
+  if (level === "低阶") return `这是一份“很想被认真对待，但内在安全感还没完全站稳”的答卷。`;
+  if (level === "中阶") return `你已经开始有选择权了，但偶尔还是会忍不住用关系证明自己。`;
+  return `你不是靠感情活的人，但你愿意认真地、长期地去爱。`;
+}
+
+function dimText(dim, score) {
+  const strength = score >= 25 ? "非常强" : score >= 20 ? "比较强" : score >= 15 ? "中等" : "较低";
+  const map = {
+    queen: `你的女王维度是 ${score}/30，属于${strength}。简单说，你在意能力、主权和自我成长。分数越高，越说明你不太愿意把人生押在关系上，而是希望自己先站稳。`,
+    heiress: `你的千金维度是 ${score}/30，属于${strength}。简单说，你会把家庭、阶层、资源和现实匹配放进婚恋判断里。分数越高，越说明你理解“婚恋不是纯感觉，也是一种配置”。`,
+    richFlower: `你的富贵花维度是 ${score}/30，属于${strength}。简单说，你会用对方是否愿意付出、投入、安排你，来判断关系是不是认真。分数越高，越说明你很在意现实行动，而不是只听情绪价值。`,
+    softFlower: `你的小白花维度是 ${score}/30，属于${strength}。简单说，你很看重被理解、被回应、被长期选择。分数越高，越说明你要的不是凑合，而是稳定、温柔、有情感流动的亲密关系。`
+  };
+  return map[dim];
+}
+
+function personalityReading(main, sub, scores, ranking) {
+  return `
+    <p class="mini-title">1. 主人格：${dimensions[main].name}</p>
+    <p>${dimText(main, scores[main])}</p>
+    <p class="mini-title">2. 稳定辅人格：${dimensions[sub].name}</p>
+    <p>${dimText(sub, scores[sub])}</p>
+    <p>所以你的关系结构不是单一人格，而是：<b>${dimensions[main].name}负责你的核心需求，${dimensions[sub].name}负责你的保护机制或补充判断</b>。</p>
+  `;
+}
+
+function levelReading(level, levelScore, rawLevel) {
+  if (level === "低阶") {
+    return `
+      <p>你的能级得分是 <b>${levelScore}/100</b>。翻成人话就是：你现在比较容易向外求。</p>
+      <p>关系一旦不稳，你可能会更想确认：对方到底在不在意我、有没有把我放进计划里、我是不是被认真选择了。</p>
+      <p>这不是你不值得爱，也不是你条件不够，而是你现在的内在支点还不够稳，所以会更需要通过外界反馈来确认自己。</p>
+    `;
+  }
+  if (level === "中阶") {
+    return `
+      <p>你的能级得分是 <b>${levelScore}/100</b>。你已经不是完全靠外界反馈活着的人了，但还没有完全松下来。</p>
+      <p>你知道自己重要，也知道关系不是全部，可是一旦遇到喜欢的人，还是可能忍不住证明、解释、试探或用力。</p>
+      <p>中阶最关键的课题不是继续变强，而是学会：不需要每一次都把自己解释清楚，也不需要每一段关系都证明你的价值。</p>
+    `;
+  }
+  return `
+    <p>你的能级得分是 <b>${levelScore}/100</b>。简单说，你已经站得比较稳了。</p>
+    <p>你进入关系不是因为没得选，也不是因为害怕一个人，而是因为你愿意。你能靠自己消化情绪，也能在关系不对等时抽身。</p>
+    <p>高阶不是不需要爱，而是：我很珍惜爱，但我不会靠爱来证明自己。</p>
+  `;
+}
+
+function mateAdvice(main, sub, level) {
+  const map = {
+    queen: "你适合能尊重你人生主权、支持你成长、情绪成熟、不试图控制你的对象。对方不一定要压过你，但一定不能消耗你。",
+    heiress: "你适合现实稳定、家庭观念清晰、资源与生活节奏匹配的人。不是只谈感觉，而是能一起做长期配置的人。",
+    richFlower: "你适合愿意持续投入、行动大于语言、能把你放进现实安排里的人。少看他说什么，多看他是否长期稳定地做。",
+    softFlower: "你适合温柔稳定、愿意回应、能承接情绪但不控制你的人。你要的不是热烈一下，而是长期被认真对待。"
+  };
+
+  let levelTip = "";
+  if (level === "低阶") levelTip = "但在当前能级下，先不要急着用高强度筛选逼对方证明。你越急着要确定性，越容易吸引会画饼、会短期投入但长期撤退的人。";
+  if (level === "中阶") levelTip = "你可以筛选，但不要过度测试。真正高质量的人，不怕被观察，但会被持续试探消耗。";
+  if (level === "高阶") levelTip = "你的重点不是抓住谁，而是保持自己的节奏。对的人会在你的稳定里靠近，而不是在你的焦虑里被拽来。";
+
+  return `<p>${map[main]}</p><p>${map[sub]}</p><p>${levelTip}</p>`;
+}
+
+function growthAdvice(main, sub, level) {
+  const typeAdvice = {
+    queen: "女王人格的升级方向：从“我必须一直强”变成“我可以很强，也可以被照顾”。真正高阶的女王，不靠硬撑证明独立。",
+    heiress: "千金人格的升级方向：把资源和退路变成松弛感，而不是优越感或焦虑感。不是因为怕输才挑，而是因为不急，所以有选择权。",
+    richFlower: "富贵花人格的升级方向：从“你给不给，证明我值不值”变成“我本来就值得，付出只是你的入场券”。不要把对方的投入当成自我价值的唯一证据。",
+    softFlower: "小白花人格的升级方向：保持柔软，但不要失去边界。真正高阶的小白花，不是会撒娇，而是情感流动、内核稳定、能靠近也能离开。"
+  };
+
+  let energy = "";
+  if (level === "低阶") {
+    energy = "能级上，你最需要补的是自我价值感。先让生活、事业、身体状态、社交系统稳定起来，不要把所有安全感都压在一个人身上。";
+  } else if (level === "中阶") {
+    energy = "能级上，你要练的是放松。不要一边说自己有选择权，一边又偷偷用力证明自己值得。少解释，少试探，多观察。";
+  } else {
+    energy = "能级上，你要做的是保持。不要因为自己能爱、想爱、愿意靠近，就怀疑自己退步了。高阶不是无欲无求，而是有欲望但不被欲望拖走。";
+  }
+
+  return `
+    <p>${typeAdvice[main]}</p>
+    <p>${typeAdvice[sub]}</p>
+    <p>${energy}</p>
+    <p><b>一句话总结：</b>想要高价值婚恋，不是把自己改成另一个人，而是让你的主人格升阶，让辅人格服务你，而不是接管你。</p>
+  `;
+}
+
+function resetQuiz() {
+  Object.keys(answers).forEach(k => delete answers[k]);
+  document.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+  updateProgress();
+  document.getElementById("warning").style.display = "none";
+  document.getElementById("result").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  document.getElementById("progressWrap").style.display = "block";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function backToQuiz() {
+  document.getElementById("result").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  document.getElementById("progressWrap").style.display = "block";
+  document.getElementById("quiz").scrollIntoView({ behavior: "smooth" });
+}
+
+renderQuestions();
+updateProgress();
+</script>
+</body>
+</html>
